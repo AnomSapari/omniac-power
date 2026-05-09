@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { OrderStatus } from "@prisma/client";
 
 export async function POST(req: Request) {
 
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
     },
 
     data: {
-      status: "SELESAI",
+      status: OrderStatus.SELESAI,
     },
   });
 
