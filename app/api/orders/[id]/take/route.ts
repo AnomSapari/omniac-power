@@ -1,19 +1,20 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const orderId = Number(params.id);
+  const { id } = await context.params;
 
-  const updated = await prisma.order.update({
-    where: { id: orderId },
+  const order = await prisma.order.update({
+    where: {
+      id: Number(id),
+    },
     data: {
-      status: "PROSES",
-      technicianId: 1, // nanti ganti dari session login
+      technicianId: 1,
     },
   });
 
-  return NextResponse.json(updated);
+  return NextResponse.json(order);
 }
