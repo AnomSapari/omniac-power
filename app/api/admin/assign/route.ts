@@ -1,37 +1,40 @@
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-
+export async function POST(req: NextRequest) {
   try {
-
-    const body = await request.json();
+    const body = await req.json();
 
     const { orderId, technicianId } = body;
 
-    // 🔥 Update order
-    const order = await prisma.order.update({
+    if (!orderId || !technicianId) {
+      return NextResponse.json(
+        {
+          error: "Order ID dan Technician ID wajib diisi",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const updatedOrder = await prisma.order.update({
       where: {
         id: Number(orderId),
       },
+
       data: {
         technicianId: Number(technicianId),
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      order,
-    });
-
+    return NextResponse.json(updatedOrder);
   } catch (error) {
-
-    console.log(error);
+    console.error("ASSIGN ERROR:", error);
 
     return NextResponse.json(
       {
-        success: false,
-        message: "Gagal assign teknisi",
+        error: "Failed to assign technician",
       },
       {
         status: 500,
