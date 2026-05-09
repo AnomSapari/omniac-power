@@ -5,12 +5,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const { orderId, technicianId } = body;
+    const orderId = Number(body.orderId);
+    const technicianId = Number(body.technicianId);
 
     if (!orderId || !technicianId) {
       return NextResponse.json(
         {
-          error: "Order ID dan Technician ID wajib diisi",
+          error: "Data tidak lengkap",
         },
         {
           status: 400,
@@ -20,11 +21,11 @@ export async function POST(req: NextRequest) {
 
     const updatedOrder = await prisma.order.update({
       where: {
-        id: Number(orderId),
+        id: orderId,
       },
 
       data: {
-        technicianId: Number(technicianId),
+        technicianId,
       },
     });
 
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Failed to assign technician",
+        error: "Gagal assign teknisi",
       },
       {
         status: 500,
