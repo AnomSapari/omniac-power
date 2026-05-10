@@ -39,7 +39,7 @@ export default function Navbar() {
           href="/"
           className="text-2xl font-bold text-cyan-400 tracking-wide"
         >
-          OmniAC Power
+          Omni AcPower
         </Link>
 
         {/* DESKTOP MENU */}

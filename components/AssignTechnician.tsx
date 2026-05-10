@@ -14,73 +14,56 @@ export default function AssignTechnician({
   orderId,
   technicians,
 }: Props) {
-
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState<string>("");
 
   const handleAssign = async () => {
-
     if (!selected) {
       alert("Pilih teknisi");
       return;
     }
 
     try {
-
       const response = await fetch("/api/admin/assign", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          orderId,
-          technicianId: selected,
+          orderId: Number(orderId),
+          technicianId: Number(selected),
         }),
       });
 
       const data = await response.json();
 
-      if (data.success) {
-
-        alert("Teknisi berhasil diassign");
-
-        window.location.reload();
-
-      } else {
-
-        alert("Gagal assign teknisi");
+      if (!response.ok) {
+        alert(data.error || "Gagal assign teknisi");
+        return;
       }
 
+      alert("Teknisi berhasil diassign");
+      window.location.reload();
+
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
       alert("Server error");
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row gap-3 mt-5">
-
       <select
         value={selected}
         onChange={(e) => setSelected(e.target.value)}
         className="bg-slate-800 border border-slate-700 px-4 py-3 rounded-xl text-white"
       >
-        <option value="">
-          Pilih Teknisi
-        </option>
+        <option value="">Pilih Teknisi</option>
 
         {technicians.map((tech) => (
-
-          <option
-            key={tech.id}
-            value={tech.id}
-          >
+          <option key={tech.id} value={tech.id}>
             {tech.name}
           </option>
-
         ))}
-
       </select>
 
       <button
@@ -89,7 +72,6 @@ export default function AssignTechnician({
       >
         Assign
       </button>
-
     </div>
   );
 }
