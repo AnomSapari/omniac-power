@@ -1,46 +1,37 @@
 
 import { NextResponse } from "next/server";
-
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-
   try {
-
     const body = await req.json();
 
-    const customer = await prisma.customer.create({
-      data: {
-        name: body.name,
-        whatsapp: body.whatsapp,
-        address: body.address,
-      },
-    });
+    const { service, name, whatsapp, address } = body;
 
     const order = await prisma.order.create({
       data: {
-        service: body.service,
-        customerId: customer.id,
+        service,
+        status: "PENDING",
+
+        customer: {
+          create: {
+            name,
+            whatsapp,
+            address,
+          },
+        },
+      },
+      include: {
+        customer: true,
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      customer,
-      order,
-    });
-
+    return Response.json(order);
   } catch (error) {
-
-    console.log(error);
-
-    return NextResponse.json(
-      {
-        success: false,
-      },
-      {
-        status: 500,
-      }
+    console.error(error);
+    return Response.json(
+      { error: "Gagal membuat booking" },
+      { status: 500 }
     );
   }
 }

@@ -1,47 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const { orderId, technicianId } = await req.json();
 
-    const orderId = Number(body.orderId);
-    const technicianId = Number(body.technicianId);
-
-    if (!orderId || !technicianId) {
-      return NextResponse.json(
-        {
-          error: "Data tidak lengkap",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const updatedOrder = await prisma.order.update({
-      where: {
-        id: orderId,
-      },
-
+    const updated = await prisma.order.update({
+      where: { id: Number(orderId) },
       data: {
-        technicianId,
+        technicianId: Number(technicianId),
+        status: "PROSES",
       },
     });
 
-    return NextResponse.json(updatedOrder);
+    return Response.json(updated);
   } catch (error) {
-    console.error("ASSIGN ERROR:", error);
-
-    return NextResponse.json(
-      {
-        error: "Gagal assign teknisi",
-      },
-      {
-        status: 500,
-      }
+    return Response.json(
+      { error: "Assign gagal" },
+      { status: 500 }
     );
   }
 }
