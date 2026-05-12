@@ -1,44 +1,23 @@
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
 
-  try {
+  const formData = await req.formData();
 
-    const body = await req.json();
+  const orderId = formData.get("orderId");
+  const technicianId = formData.get("technicianId");
 
-    const { orderId, technicianId } = body;
+  await prisma.order.update({
+    where: {
+      id: Number(orderId),
+    },
 
-    // ✅ simpan hasil update ke variable order
-    const order = await prisma.order.update({
+    data: {
+      technicianId: Number(technicianId),
+      status: "PROCESS",
+    },
+  });
 
-      where: {
-        id: Number(orderId),
-      },
-
-      data: {
-        technicianId: Number(technicianId),
-        status: "PROCESS",
-      },
-
-    });
-
-    return Response.json({
-      success: true,
-      order,
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    return Response.json(
-      {
-        success: false,
-        message: "Assign gagal",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  redirect("/admin");
 }

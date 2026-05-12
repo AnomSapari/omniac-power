@@ -1,35 +1,21 @@
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json();
 
-    const updated = await prisma.order.update({
-      where: {
-        id: Number(body.orderId),
-      },
+  const formData = await req.formData();
 
-      data: {
-        status: "DONE",
-      },
-    });
+  const orderId = formData.get("orderId");
 
-    return Response.json({
-      success: true,
-      order: updated,
-    });
+  await prisma.order.update({
+    where: {
+      id: Number(orderId),
+    },
 
-  } catch (error) {
-    console.error("FINISH ERROR:", error);
+    data: {
+      status: "DONE",
+    },
+  });
 
-    return Response.json(
-      {
-        success: false,
-        error: "Gagal update status",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  redirect("/technician");
 }

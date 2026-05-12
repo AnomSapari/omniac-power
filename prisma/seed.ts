@@ -9,14 +9,14 @@ async function main() {
   // ADMIN
   await prisma.user.upsert({
     where: {
-      email: "admin@coolcare.com",
+      email: "admin@omniacpower.com",
     },
 
     update: {},
 
     create: {
       name: "Admin",
-      email: "admin@coolcare.com",
+      email: "admin@omniacpower.com",
       password,
       role: "ADMIN",
     },
@@ -26,19 +26,19 @@ async function main() {
   const technicians = [
     {
       name: "Teknisi 1",
-      email: "tech1@coolcare.com",
+      email: "tech1@omniacpower.com",
     },
     {
       name: "Teknisi 2",
-      email: "tech2@coolcare.com",
+      email: "tech2@omniacpower.com",
     },
     {
       name: "Teknisi 3",
-      email: "",
+       email: "tech3@omniacpower.com",
     },
     {
       name: "Teknisi 4",
-      email: "tech4@coolcare.com",
+      email: "tech4@omniacpower.com",
     },
   ];
 

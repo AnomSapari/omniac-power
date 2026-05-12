@@ -15,6 +15,7 @@ enum Role {
 
 enum OrderStatus {
   PENDING
+  ASSIGNED
   PROCESS
   DONE
 }
@@ -49,6 +50,7 @@ model Order {
 
   createdAt     DateTime @default(now())
 
+ // 🔧 teknisi
   technicianId  Int?
   technician    User? @relation("TechnicianOrders", fields: [technicianId], references: [id])
 }

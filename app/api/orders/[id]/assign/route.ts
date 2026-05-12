@@ -18,7 +18,7 @@ export async function POST(
 
     data: {
       technicianId: Number(body.technicianId),
-      status: "PROCESS"
+      status: "ASSIGNED",
     },
   });
 
