@@ -3,11 +3,13 @@
 @tailwind utilities;
 
 
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
+  
   background: #f8fafc;
   overflow-x: hidden;
 }

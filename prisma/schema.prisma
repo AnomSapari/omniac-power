@@ -7,92 +7,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//
-// ======================================================
-// USER
-// ======================================================
-// Admin & Teknisi login sistem
-//
-
-model User {
-  id         Int        @id @default(autoincrement())
-
-  name       String
-  email      String     @unique
-  password   String
-
-  role       UserRole   @default(TEKNISI)
-
-  createdAt  DateTime   @default(now())
-
-  // RELATION
-  orders     Order[]
-}
-
-//
-// ======================================================
-// ROLE USER
-// ======================================================
-//
-
-enum UserRole {
+enum Role {
   ADMIN
-  TEKNISI
+  TECHNICIAN
+  CUSTOMER
 }
-
-//
-// ======================================================
-// CUSTOMER
-// ======================================================
-// Customer booking service
-//
-
-model Customer {
-  id         Int        @id @default(autoincrement())
-
-  name       String
-  whatsapp   String
-  address    String
-
-  createdAt  DateTime   @default(now())
-
-  // RELATION
-  orders     Order[]
-}
-
-//
-// ======================================================
-// ORDER
-// ======================================================
-// Booking service customer
-//
-
-model Order {
-  id            Int           @id @default(autoincrement())
-
-  service       String
-
-  status        OrderStatus   @default(PENDING)
-
-  customerId    Int
-  technicianId  Int?
-
-  createdAt     DateTime      @default(now())
-
-  customer       Customer      @relation(fields: [customerId], references: [id])
-
-  technician     User?         @relation(fields: [technicianId], references: [id])
-}
-
-//
-// ======================================================
-// STATUS ORDER
-// ======================================================
-//
 
 enum OrderStatus {
   PENDING
-  PROSES
-  SELESAI
-  DIBATALKAN
+  PROCESS
+  DONE
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+
+  whatsapp  String?
+  address   String?
+
+  createdAt DateTime @default(now())
+
+
+
+  // technician orders
+  technicianOrders Order[] @relation("TechnicianOrders")
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+
+  service       String
+  status        OrderStatus @default(PENDING)
+
+  customerName      String
+  customerWhatsapp  String
+  customerAddress   String
+
+  createdAt     DateTime @default(now())
+
+  technicianId  Int?
+  technician    User? @relation("TechnicianOrders", fields: [technicianId], references: [id])
 }

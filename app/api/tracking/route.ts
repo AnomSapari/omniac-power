@@ -10,17 +10,9 @@ export async function POST(req: Request) {
 
     const orders = await prisma.order.findMany({
 
-      where: {
-        customer: {
-          whatsapp: body.whatsapp,
-        },
-      },
+      
 
-      include: {
-        customer: true,
-        technician: true,
-      },
-
+      
       orderBy: {
         createdAt: "desc",
       },

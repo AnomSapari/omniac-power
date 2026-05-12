@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     },
 
     data: {
-       status: OrderStatus.PROSES,
+        status: "PROCESS",
     },
   });
 

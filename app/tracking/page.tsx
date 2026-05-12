@@ -138,12 +138,12 @@ export default function TrackingPage() {
 
                 <p>
                   <strong>Customer:</strong>{" "}
-                  {order.customer.name}
+                  order.customerName
                 </p>
 
                 <p>
                   <strong>Alamat:</strong>{" "}
-                  {order.customer.address}
+                 order.customerAddress
                 </p>
 
                 <p>

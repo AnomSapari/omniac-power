@@ -1,46 +1,35 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-import { OrderStatus } from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
-    const { orderId } = await req.json();
-
-    if (!orderId) {
-      return Response.json(
-        { error: "orderId wajib diisi" },
-        { status: 400 }
-      );
-    }
-
-    const order = await prisma.order.findUnique({
-      where: { id: Number(orderId) },
-      include: {
-        customer: true,
-      },
-    });
-
-    if (!order) {
-      return Response.json(
-        { error: "Order tidak ditemukan" },
-        { status: 404 }
-      );
-    }
+    const body = await req.json();
 
     const updated = await prisma.order.update({
-      where: { id: Number(orderId) },
+      where: {
+        id: Number(body.orderId),
+      },
+
       data: {
-        status: "SELESAI",
+        status: "DONE",
       },
     });
 
-    return Response.json(updated);
+    return Response.json({
+      success: true,
+      order: updated,
+    });
+
   } catch (error) {
     console.error("FINISH ERROR:", error);
 
     return Response.json(
-       { error: "Gagal finish job" },
-      { status: 500 }
+      {
+        success: false,
+        error: "Gagal update status",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

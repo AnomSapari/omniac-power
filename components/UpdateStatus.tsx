@@ -1,73 +1,44 @@
 "use client";
 
-interface Props {
-  orderId: number;
-}
-
 export default function UpdateStatus({
   orderId,
-}: Props) {
+}: any) {
 
   const updateStatus = async (status: string) => {
 
-    try {
+    const res = await fetch(`/api/orders/${orderId}/status`, {
+      method: "POST",
 
-      const response = await fetch("/api/order/status", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderId,
-          status,
-        }),
-      });
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-      const data = await response.json();
+      body: JSON.stringify({
+        status,
+      }),
+    });
 
-      if (data.success) {
-
-        alert("Status berhasil diupdate");
-
-        window.location.reload();
-
-      } else {
-
-        alert("Gagal update status");
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert("Server error");
+    if (res.ok) {
+      window.location.reload();
     }
   };
 
   return (
-    <div className="flex flex-wrap gap-3 mt-6">
+    <div className="flex gap-3">
 
       <button
-        onClick={() => updateStatus("PROSES")}
-        className="bg-blue-500 hover:bg-blue-400 transition px-5 py-3 rounded-xl font-semibold"
+        onClick={() => updateStatus("ON_PROGRESS")}
+        className="bg-yellow-600 px-4 py-2 rounded-lg"
       >
         Proses
       </button>
 
       <button
-        onClick={() => updateStatus("SELESAI")}
-        className="bg-green-500 hover:bg-green-400 transition px-5 py-3 rounded-xl font-semibold"
+        onClick={() => updateStatus("COMPLETED")}
+        className="bg-green-600 px-4 py-2 rounded-lg"
       >
         Selesai
       </button>
-
-      <button
-        onClick={() => updateStatus("DIBATALKAN")}
-        className="bg-red-500 hover:bg-red-400 transition px-5 py-3 rounded-xl font-semibold"
-      >
-        Batalkan
-      </button>
-
     </div>
   );
 }

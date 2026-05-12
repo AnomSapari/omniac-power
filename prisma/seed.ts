@@ -8,8 +8,12 @@ async function main() {
 
   // ADMIN
   await prisma.user.upsert({
-    where: { email: "admin@coolcare.com" },
+    where: {
+      email: "admin@coolcare.com",
+    },
+
     update: {},
+
     create: {
       name: "Admin",
       email: "admin@coolcare.com",
@@ -18,37 +22,49 @@ async function main() {
     },
   });
 
-  // TEKNISI 1
-  await prisma.user.upsert({
-    where: { email: "tech1@coolcare.com" },
-    update: {},
-    create: {
+  // TEKNISI
+  const technicians = [
+    {
       name: "Teknisi 1",
       email: "tech1@coolcare.com",
-      password,
-      role: "TEKNISI",
     },
-  });
-
-  // TEKNISI 2
-  await prisma.user.upsert({
-    where: { email: "tech2@coolcare.com" },
-    update: {},
-    create: {
+    {
       name: "Teknisi 2",
       email: "tech2@coolcare.com",
-      password,
-      role: "TEKNISI",
     },
-  });
+    {
+      name: "Teknisi 3",
+      email: "",
+    },
+    {
+      name: "Teknisi 4",
+      email: "tech4@coolcare.com",
+    },
+  ];
 
-  console.log("✅ Seed selesai: admin + teknisi dibuat");
+  for (const tech of technicians) {
+    await prisma.user.upsert({
+      where: {
+        email: tech.email,
+      },
+
+      update: {},
+
+      create: {
+        name: tech.name,
+        email: tech.email,
+        password,
+        role: "TECHNICIAN",
+      },
+    });
+  }
+
+  console.log("✅ Admin & Teknisi berhasil dibuat");
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
+  .catch((error) => {
+    console.error(error);
   })
   .finally(async () => {
     await prisma.$disconnect();

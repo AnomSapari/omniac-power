@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -19,60 +20,82 @@ export const authOptions: NextAuthOptions = {
       name: "credentials",
 
       credentials: {
-        email: {},
-        password: {},
+        email: {
+          label: "Email",
+          type: "email",
+        },
+
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
 
       async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials?.password) {
-            return null;
-          }
+        // ❌ Validasi input
+        if (
+          !credentials?.email ||
+          !credentials?.password
+        ) {
+          throw new Error(
+            "Email dan password wajib diisi"
+          );
+        }
 
-          const user = await prisma.user.findUnique({
-            where: {
-              email: credentials.email,
-            },
-          });
+        // 🔍 Cari user berdasarkan email
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
 
-          if (!user) {
-            return null;
-          }
+        // ❌ User tidak ditemukan
+        if (!user) {
+          throw new Error(
+            "User tidak ditemukan"
+          );
+        }
 
-          const validPassword = await bcrypt.compare(
+        // 🔐 Validasi password
+        const isValidPassword =
+          await bcrypt.compare(
             credentials.password,
             user.password
           );
 
-          if (!validPassword) {
-            return null;
-          }
-
-          return {
-            id: String(user.id),
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          };
-        } catch (error) {
-          console.error("AUTH ERROR:", error);
-          return null;
+        // ❌ Password salah
+        if (!isValidPassword) {
+          throw new Error(
+            "Password salah"
+          );
         }
+
+        // ✅ Login berhasil
+        return {
+          id: String(user.id),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
 
   callbacks: {
+    // 🔐 Simpan data ke JWT
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.id = user.id;
+        token.role = user.role;
       }
 
       return token;
     },
 
+    // 🔐 Kirim data ke session
     async session({ session, token }) {
       if (session.user) {
+        session.user.id = token.id as string;
         session.user.role = token.role as string;
       }
 

@@ -4,19 +4,14 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const {
-      name,
-      whatsapp,
-      address,
-      service,
-    } = body;
+    const order = await prisma.order.update({
+      where: {
+        id: Number(body.orderId),
+      },
 
-    const order = await prisma.order.create({
       data: {
-        customerName: name,
-        customerWhatsapp: whatsapp,
-        customerAddress: address,
-        service,
+        technicianId: Number(body.technicianId),
+        status: "PROCESS",
       },
     });
 
@@ -29,8 +24,13 @@ export async function POST(req: Request) {
     console.error(error);
 
     return Response.json(
-      { error: "Gagal booking" },
-      { status: 500 }
+      {
+        success: false,
+        error: "Gagal assign teknisi",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

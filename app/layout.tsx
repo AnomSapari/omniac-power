@@ -1,15 +1,10 @@
 import "./globals.css";
-import { Poppins } from "next/font/google";
-import Providers from "@/components/providers/Providers";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "OmniCool AC",
-  description: "Service AC Profesional",
+export const metadata: Metadata = {
+  title: "CoolCare AC",
+  description: "Booking Service AC",
 };
 
 export default function RootLayout({
@@ -18,11 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
-      <body className={poppins.className}>
-        <Providers>
-          {children}
-        </Providers>
+    <html lang="en">
+      <body>
+        {children}
       </body>
     </html>
   );

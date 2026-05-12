@@ -1,70 +1,76 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-
+import { signIn, getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const result = await signIn("credentials", {
-    email,
-    password,
-    redirect: false,
-  });
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-  if (result?.ok) {
+    // ❌ LOGIN GAGAL
+    if (result?.error) {
+      alert("Email atau password salah");
+      return;
+    }
 
-    window.location.href = "/";
+    // 🔐 AMBIL SESSION
+    const session = await getSession();
 
-  } else {
-
-    alert("Email atau password salah");
-
-  }
-};
+    // ✅ REDIRECT BERDASARKAN ROLE
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin");
+    } else if (session?.user?.role === "TECHNICIAN") {
+      router.push("/technician");
+    } else {
+      router.push("/");
+    }
+  };
 
   return (
-    <main className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
-
-      <div className="w-full max-w-md bg-white/10 border border-white/10 backdrop-blur-2xl rounded-3xl p-8">
-
-        <h1 className="text-4xl font-bold text-white mb-8 text-center">
-          Login OmniCool
+    <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md"
+      >
+        <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
+          Login
         </h1>
 
-        <div className="space-y-5">
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full border rounded-lg px-4 py-3 mb-4"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/10 text-white"
-          />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full border rounded-lg px-4 py-3 mb-6"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/10 text-white"
-          />
-
-          <button
-            onClick={handleLogin}
-            className="w-full bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold py-4 rounded-2xl transition"
-          >
-            Login
-          </button>
-
-        </div>
-
-      </div>
-    </main>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
+        >
+          Login
+        </button>
+      </form>
+    </div>
   );
 }

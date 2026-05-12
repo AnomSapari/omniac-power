@@ -15,7 +15,7 @@ export async function POST(
       },
 
       data: {
-        status: OrderStatus.PROSES,
+        status: "PROCESS",
       },
     });
 
