@@ -1,22 +1,22 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
-import { OrderStatus } from "@prisma/client";
 
 export async function POST(req: Request) {
 
-  const body = await req.json();
+  const formData = await req.formData();
+
+  const orderId = formData.get("orderId");
 
   await prisma.order.update({
     where: {
-      id: body.orderId,
+      id: Number(orderId),
     },
 
     data: {
-        status: "PROCESS",
+      status: "PROCESS",
     },
   });
 
-  return NextResponse.json({
-    success: true,
-  });
+  return Response.redirect(
+    new URL("/technician", req.url)
+  );
 }

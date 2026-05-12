@@ -14,14 +14,14 @@ export default async function AdminPage() {
 
   // 🔥 Semua order
   const orders = await prisma.order.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+  include: {
+    technician: true,
+  },
 
-    include: {
-      technician: true,
-    },
-  });
+  orderBy: {
+    createdAt: "desc",
+  },
+});
 
   // 🔥 Semua teknisi
   const technicians = await prisma.user.findMany({
@@ -29,6 +29,13 @@ export default async function AdminPage() {
       role: "TECHNICIAN",
     },
   });
+
+  const statusColor = {
+  PENDING: "bg-yellow-500",
+  ASSIGNED: "bg-blue-500",
+  PROCESS: "bg-orange-500",
+  DONE: "bg-green-500",
+};
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
@@ -61,18 +68,20 @@ export default async function AdminPage() {
             <p className="text-slate-400 mb-4">
               Status:
               {" "}
-              <span className="text-cyan-400">
-                {order.status}
-              </span>
+             <span
+  className={`px-3 py-1 rounded-full text-white text-sm ${statusColor[order.status]}`}
+>
+  {order.status}
+</span>
             </p>
 
             {/* TEKNISI */}
             {order.technician && (
-              <p className="text-green-400 mb-4">
-                Teknisi:
-                {" "}
-                {order.technician.name}
-              </p>
+            <p className="text-slate-400">
+               Teknisi:
+                 {" "}
+                {order.technician?.name || "Belum dipilih"}
+            </p>
             )}
 
             {/* ASSIGN */}

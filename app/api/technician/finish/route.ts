@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
 
@@ -17,5 +16,7 @@ export async function POST(req: Request) {
     },
   });
 
-  redirect("/technician");
+  return Response.redirect(
+    new URL("/technician", req.url)
+  );
 }
