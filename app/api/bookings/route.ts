@@ -12,18 +12,19 @@ export async function POST(req: Request) {
     } = body;
 
     const order = await prisma.order.create({
-      data: {
-        customerName: name,
-        customerWhatsapp: whatsapp,
-        customerAddress: address,
-        service,
-      },
-    });
+  data: {
+    service,
+
+    customerName: name,
+    customerWhatsapp: whatsapp,
+    customerAddress: address,
+  },
+});
 
     return Response.json({
-      success: true,
-      order,
-    });
+  success: true,
+  orderId: order.id,
+});
 
   } catch (error) {
     console.error(error);

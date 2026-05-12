@@ -1,166 +1,142 @@
-"use client";
+import { prisma } from "@/lib/prisma";
 
-import { useState } from "react";
+export const dynamic = "force-dynamic";
 
-export default function TrackingPage() {
+export default async function TrackingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    id?: string;
+  }>;
+}) {
 
-  const [whatsapp, setWhatsapp] = useState("");
+  const { id } = await searchParams;
 
-  const [orders, setOrders] = useState<any[]>([]);
+  if (!id) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        Order ID tidak ditemukan
+      </div>
+    );
+  }
 
-  const [loading, setLoading] = useState(false);
+  const order = await prisma.order.findUnique({
+    where: {
+      id: Number(id),
+    },
 
-  const handleSearch = async () => {
+    include: {
+      technician: true,
+    },
+  });
 
-    if (!whatsapp) return;
-
-    setLoading(true);
-
-    try {
-
-      const response = await fetch("/api/tracking", {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          whatsapp,
-        }),
-      });
-
-      const data = await response.json();
-
-      setOrders(data.orders || []);
-
-    } catch (error) {
-
-      console.error(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  };
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+        Order tidak ditemukan
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-8">
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-2xl mx-auto">
 
-        {/* HEADER */}
-        <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold mb-8">
+          Tracking Order
+        </h1>
 
-          <h1 className="text-5xl font-bold mb-4">
-            Tracking Service
-          </h1>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
 
-          <p className="text-slate-400">
-            Cek status service AC Anda secara realtime.
-          </p>
+          <h2 className="text-2xl font-bold mb-4">
+            {order.service}
+          </h2>
 
-        </div>
+          <div className="space-y-3 text-slate-300">
 
-        {/* SEARCH */}
-        <div className="bg-white/10 border border-white/10 rounded-3xl p-6 backdrop-blur-xl mb-10">
+            <p>
+              Customer:
+              {" "}
+              {order.customerName}
+            </p>
 
-          <div className="flex flex-col md:flex-row gap-4">
+            <p>
+              WhatsApp:
+              {" "}
+              {order.customerWhatsapp}
+            </p>
 
-            <input
-              type="text"
-              placeholder="Masukkan nomor WhatsApp"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-              className="flex-1 bg-slate-900 border border-slate-700 px-5 py-4 rounded-2xl outline-none focus:border-cyan-400"
-            />
+            <p>
+              Address:
+              {" "}
+              {order.customerAddress}
+            </p>
 
-            <button
-              onClick={handleSearch}
-              className="bg-cyan-400 hover:bg-cyan-300 transition text-slate-900 font-bold px-8 py-4 rounded-2xl"
-            >
-              {loading ? "Mencari..." : "Cek Status"}
-            </button>
+            <p>
+              Teknisi:
+              {" "}
+              {order.technician?.name || "Belum dipilih"}
+            </p>
+
+          </div>
+
+          <div className="mt-8">
+
+            <div className="text-lg font-bold mb-4">
+              Status Order
+            </div>
+
+            <div className="space-y-4">
+
+              <div
+                className={`p-4 rounded-xl ${
+                  order.status === "PENDING"
+                    ? "bg-yellow-500 text-black"
+                    : "bg-slate-800"
+                }`}
+              >
+                PENDING
+              </div>
+
+              <div
+                className={`p-4 rounded-xl ${
+                  order.status === "ASSIGNED"
+                    ? "bg-blue-500"
+                    : "bg-slate-800"
+                }`}
+              >
+                ASSIGNED
+              </div>
+
+              <div
+                className={`p-4 rounded-xl ${
+                  order.status === "PROCESS"
+                    ? "bg-orange-500"
+                    : "bg-slate-800"
+                }`}
+              >
+                PROCESS
+              </div>
+
+              <div
+                className={`p-4 rounded-xl ${
+                  order.status === "DONE"
+                    ? "bg-green-500"
+                    : "bg-slate-800"
+                }`}
+              >
+                DONE
+              </div>
+
+            </div>
 
           </div>
 
         </div>
 
-        {/* RESULT */}
-        <div className="grid gap-6">
-
-          {orders.map((order: any) => (
-
-            <div
-              key={order.id}
-              className="bg-white/10 border border-white/10 rounded-3xl p-6 backdrop-blur-xl"
-            >
-
-              <div className="flex items-center justify-between mb-6">
-
-                <div>
-
-                  <h2 className="text-2xl font-bold">
-                    {order.service}
-                  </h2>
-
-                  <p className="text-slate-400 text-sm mt-1">
-                    Order #{order.id}
-                  </p>
-
-                </div>
-
-                {/* STATUS */}
-                <span
-                  className={`px-4 py-2 rounded-full text-sm font-bold border
-                    ${
-                      order.status === "PENDING"
-                        ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30"
-
-                        : order.status === "PROSES"
-                        ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-
-                        : order.status === "SELESAI"
-                        ? "bg-green-500/20 text-green-300 border-green-500/30"
-
-                        : "bg-red-500/20 text-red-300 border-red-500/30"
-                    }
-                  `}
-                >
-                  {order.status}
-                </span>
-
-              </div>
-
-              <div className="space-y-3 text-slate-300">
-
-                <p>
-                  <strong>Customer:</strong>{" "}
-                  order.customerName
-                </p>
-
-                <p>
-                  <strong>Alamat:</strong>{" "}
-                 order.customerAddress
-                </p>
-
-                <p>
-                  <strong>Teknisi:</strong>{" "}
-                  {order.technician?.name || "Belum ditentukan"}
-                </p>
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
       </div>
 
-    </main>
+    </div>
   );
 }
