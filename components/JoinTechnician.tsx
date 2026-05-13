@@ -1,98 +1,192 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Wallet, Smartphone } from "lucide-react";
-
-const features = [
-  {
-    title: "Dapat Order",
-    desc: "Terima order service AC dari customer sekitar Anda.",
-    icon: Users,
-  },
-  {
-    title: "Tambah Penghasilan",
-    desc: "Bangun penghasilan tambahan dengan sistem marketplace.",
-    icon: Wallet,
-  },
-  {
-    title: "Mudah Digunakan",
-    desc: "Kelola order langsung dari HP Anda.",
-    icon: Smartphone,
-  },
-];
 
 export default function JoinTechnician() {
   return (
-    <section className="relative py-28 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-blue-800 text-white">
+    <section className="py-24 px-6 bg-slate-950 text-white relative overflow-hidden">
 
-      {/* Blur Effect */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-400/20 blur-3xl rounded-full"></div>
+      <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/10 blur-3xl rounded-full" />
 
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400/20 blur-3xl rounded-full"></div>
+      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* LEFT */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
 
-        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 px-5 py-2 rounded-full text-sm mb-6">
+            👨‍🔧 Program Mitra Teknisi
+          </div>
 
-          <p className="text-cyan-300 font-semibold mb-4">
-              MITRA TEKNISI OmniAC Power
-          </p>
-
-          <h2 className="text-5xl font-bold mb-6">
-            Gabung Menjadi Teknisi OmniAC Power
+          <h2 className="text-5xl font-black leading-tight mb-8">
+            Punya Skill
+            <span className="text-cyan-400 block">
+              Service AC?
+            </span>
           </h2>
 
-          <p className="text-blue-100 max-w-3xl mx-auto text-lg leading-relaxed">
-            Kami membuka peluang bagi teknisi AC & Power profesional
-            untuk mendapatkan lebih banyak customer dan meningkatkan penghasilan.
+          <p className="text-slate-300 text-lg leading-relaxed mb-8">
+            Gabung menjadi mitra teknisi profesional dan dapatkan order langsung dari customer tanpa harus mencari pelanggan sendiri.
           </p>
 
-        </div>
+          <div className="space-y-4 mb-10">
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-
-          {features.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white/10 border border-white/10 backdrop-blur-xl rounded-3xl p-8 hover:bg-white/15 transition"
-            >
-
-              <div className="w-16 h-16 rounded-2xl bg-cyan-400/20 flex items-center justify-center mb-6">
-
-                <item.icon className="w-8 h-8 text-cyan-300" />
-
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                ⚡
               </div>
 
-              <h3 className="text-2xl font-bold mb-4">
-                {item.title}
-              </h3>
+              <div>
+                <h3 className="font-bold">
+                  Order Masuk Otomatis
+                </h3>
 
-              <p className="text-blue-100 leading-relaxed">
-                {item.desc}
-              </p>
+                <p className="text-slate-400 text-sm">
+                  Fokus bekerja tanpa repot cari customer.
+                </p>
+              </div>
+            </div>
 
-            </motion.div>
-          ))}
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                💰
+              </div>
 
-        </div>
+              <div>
+                <h3 className="font-bold">
+                  Pembayaran Transparan
+                </h3>
 
-        <div className="text-center">
+                <p className="text-slate-400 text-sm">
+                  Sistem fee jelas dan tidak membingungkan.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                📱
+              </div>
+
+              <div>
+                <h3 className="font-bold">
+                  Kerja Fleksibel
+                </h3>
+
+                <p className="text-slate-400 text-sm">
+                  Ambil order kapan saja sesuai waktu Anda.
+                </p>
+              </div>
+            </div>
+
+          </div>
 
           <a
-            href="https://wa.me/6283194549588"
-            target="_blank"
-            className="inline-block bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold px-10 py-5 rounded-2xl text-lg transition duration-300 shadow-2xl"
+            href="/join-technician"
+            className="inline-flex items-center justify-center bg-cyan-500 hover:bg-cyan-600 transition-all duration-300 px-8 py-4 rounded-2xl font-bold text-lg"
           >
-            Gabung Sekarang
+            Daftar Menjadi Mitra
           </a>
 
-        </div>
+        </motion.div>
+
+
+        {/* RIGHT */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="relative"
+        >
+
+          <div className="bg-slate-900 border border-slate-800 rounded-[32px] p-8 shadow-2xl">
+
+            <div className="flex items-center gap-4 mb-8">
+
+              <div className="w-16 h-16 rounded-2xl bg-cyan-500/20 flex items-center justify-center text-3xl">
+                👨‍🔧
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-black">
+                  Teknisi Aktif
+                </h3>
+
+                <p className="text-slate-400">
+                  Partner profesional terpercaya
+                </p>
+              </div>
+
+            </div>
+
+            <div className="space-y-5">
+
+              <div className="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-bold text-lg">
+                    Andi Saputra
+                  </h4>
+
+                  <span className="text-green-400 text-sm font-semibold">
+                    Online
+                  </span>
+                </div>
+
+                <p className="text-slate-400 text-sm mb-3">
+                  Teknisi AC Split & Central
+                </p>
+
+                <div className="flex justify-between text-sm">
+                  <span className="text-yellow-400">
+                    ⭐ 4.9 Rating
+                  </span>
+
+                  <span className="text-cyan-400">
+                    127 Order
+                  </span>
+                </div>
+              </div>
+
+
+              <div className="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-bold text-lg">
+                    Budi Wijaya
+                  </h4>
+
+                  <span className="text-green-400 text-sm font-semibold">
+                    Available
+                  </span>
+                </div>
+
+                <p className="text-slate-400 text-sm mb-3">
+                  Spesialis Bongkar Pasang AC
+                </p>
+
+                <div className="flex justify-between text-sm">
+                  <span className="text-yellow-400">
+                    ⭐ 4.8 Rating
+                  </span>
+
+                  <span className="text-cyan-400">
+                    89 Order
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </motion.div>
 
       </div>
+
     </section>
   );
 }
