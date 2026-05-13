@@ -1,23 +1,33 @@
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
 
-  const formData = await req.formData();
+  try {
 
-  const orderId = formData.get("orderId");
-  const technicianId = formData.get("technicianId");
+    const body = await req.json();
 
-  await prisma.order.update({
-    where: {
-      id: Number(orderId),
-    },
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: Number(body.orderId),
+      },
 
-    data: {
-      technicianId: Number(technicianId),
-      status: "PROCESS",
-    },
-  });
+      data: {
+        technicianId: Number(body.technicianId),
+        status: "PROCESS",
+      },
+    });
 
-  redirect("/admin");
+    return Response.json({
+      success: true,
+      order: updatedOrder,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    return Response.json({
+      success: false,
+    });
+  }
 }
