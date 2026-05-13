@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
+
 export async function POST(req: Request) {
 
   try {
@@ -24,10 +25,11 @@ export async function POST(req: Request) {
 
   } catch (error) {
 
-    console.error(error);
+    console.error( "ASSIGN ERROR:", error);
 
     return Response.json({
       success: false,
-    });
+      message: "Gagal assign teknisi",
+    }, { status: 500 });
   }
 }
